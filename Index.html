@@ -5,25 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resume Builder</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h2>Resume Builder</h2>
-        <form action="process.php" method="POST">
+        <form id="resumeForm">
             <label for="name">Full Name:</label>
-            <input type="text" name="name" required>
+            <input type="text" id="name" name="name" oninput="updatePreview()" required>
 
             <label for="email">Email:</label>
-            <input type="email" name="email" required>
+            <input type="email" id="email" name="email" oninput="updatePreview()" required>
 
             <label for="phone">Phone:</label>
-            <input type="text" name="phone" required>
+            <input type="text" id="phone" name="phone" oninput="updatePreview()" required>
 
             <label for="address">Address:</label>
-            <textarea name="address" required></textarea>
+            <textarea id="address" name="address" oninput="updatePreview()" required></textarea>
 
-            <button type="submit">Generate Resume</button>
+            <label for="education">Education:</label>
+            <textarea id="education" name="education" oninput="updatePreview()"></textarea>
+
+            <label for="experience">Experience:</label>
+            <textarea id="experience" name="experience" oninput="updatePreview()"></textarea>
+
+            <label for="skills">Skills:</label>
+            <input type="text" id="skills" name="skills" oninput="updatePreview()">
+
+            <label for="projects">Projects:</label>
+            <textarea id="projects" name="projects" oninput="updatePreview()"></textarea>
+
+            <label for="certifications">Certifications:</label>
+            <textarea id="certifications" name="certifications" oninput="updatePreview()"></textarea>
+
+            <button type="button" onclick="generatePDF()">Generate PDF</button>
         </form>
     </div>
+
+    <div class="preview">
+        <h2>Resume Preview</h2>
+        <div id="resumePreview"></div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            document.getElementById('resumePreview').innerHTML = `
+                <h3>${document.getElementById('name').value}</h3>
+                <p><strong>Email:</strong> ${document.getElementById('email').value}</p>
+                <p><strong>Phone:</strong> ${document.getElementById('phone').value}</p>
+                <p><strong>Address:</strong> ${document.getElementById('address').value}</p>
+                <p><strong>Education:</strong> ${document.getElementById('education').value}</p>
+                <p><strong>Experience:</strong> ${document.getElementById('experience').value}</p>
+                <p><strong>Skills:</strong> ${document.getElementById('skills').value}</p>
+                <p><strong>Projects:</strong> ${document.getElementById('projects').value}</p>
+                <p><strong>Certifications:</strong> ${document.getElementById('certifications').value}</p>
+            `;
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.text(document.getElementById('resumePreview').innerText, 10, 10);
+            doc.save("resume.pdf");
+        }
+    </script>
 </body>
 </html>
